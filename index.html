@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>테킷강의-세렝게티MBTI만들기</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css" /> <!-- 부트스트랩보다 밑에 있어야 나중에 css로 덮어쓰기 가능 -->
+</head>
+
+<!-- 첫 시작화면 -->
+<body class="container">
+  <article class="start">
+    <h1 class="mt-5 text-center">나랑 꼭 닮은 세렝게티 동물은?</h1>
+    <button type="button" class="btn btn-primary mt-5" onclick="start();">테스트 시작하기</button>
+  </article>
+
+  <!-- 문제 -->
+  <article class="question">
+    <!-- 설문응답 진도 프로그레스 -->
+    <div class="progress mt-5">
+      <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <h2 id="title" class="text-center mt-5">문제</h2>
+    <!-- 무슨 값을 선택했는지 보내는 타입 값 -->
+    <input id="type" type="hidden" value="EI"/>
+    <button id="A" type="button" class="btn btn-primary mt-5">테스트 시작하기</button>
+    <button id="B" type="button" class="btn btn-primary mt-5">테스트 시작하기</button>
+  </article>
+
+  <article class="result">
+    <img id="img" class="rounded-circle" src="lion.jpg" alt="animal" />
+    <h2 id="animal" class="text-center mt-5">동물이름</h2>
+    <h3 id="explain"class="text-center mt-5">설명</h3>
+  </article>
+
+  <!-- 점수 값 저장하는 인풋 타입 -->
+  <input type="hidden" id="EI" value="0"/>
+  <input type="hidden" id="SN" value="0"/>
+  <input type="hidden" id="TF" value="0"/>
+  <input type="hidden" id="JP" value="0"/>
+
+  <!-- 자바스크립트 부트스트랩 -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+<!-- 자바스크립트 함수 -->
+  <script>
+    //현재 몇번 문제에 있는 지
+    let num = 1;
+
+    let q={
+      1:{"title": "문제 1번", "type": "EI", "A": "E", "B":"I"},
+      2:{"title": "문제 2번", "type": "EI", "A": "E", "B":"I"},
+      3:{"title": "문제 3번", "type": "EI", "A": "E", "B":"I"},
+      4:{"title": "문제 4번", "type": "SN", "A": "S", "B":"N"},
+      5:{"title": "문제 5번", "type": "SN", "A": "S", "B":"N"},
+      6:{"title": "문제 6번", "type": "SN", "A": "S", "B":"N"},
+      7:{"title": "문제 7번", "type": "TF", "A": "T", "B":"F"},
+      8:{"title": "문제 8번", "type": "TF", "A": "T", "B":"F"},
+      9:{"title": "문제 9번", "type": "TF", "A": "T", "B":"F"},
+      10:{"title": "문제 10번", "type": "JP", "A": "J", "B":"P"},
+      11:{"title": "문제 11번", "type": "JP", "A": "J", "B":"P"},
+      12:{"title": "문제 12번", "type": "JP", "A": "J", "B":"P"},
+    }
+
+    let result={
+      "ISTJ" : {"animal":"하마", "explain": "하마 설명", "img": "lion.jpg"},
+      "ENFP" : {"animal":"멋쟁이 사자", "explain": "멋쟁이 설명", "img": "lion.jpg"},
+      "ISTJ" : {"animal":"호랑이", "explain": "호랑이 설명", "img": "lion.jpg"},
+
+    }
+
+
+    // 시작하기 눌렀을 때
+    function start(){
+      $(".start").hide();
+      $(".question").show();
+      next();
+    }
+
+    // 질문 답 선택 시s
+    $("#A").click(function(){
+      //선택한 값의 타입을 저장
+      let type=$("#type").val();
+      // 선택한 값의 타입의 해당하는 태그를 선택해서 값을 올림
+      let preValue=$("#"+type).val();
+      // 이전 값에 +1 을 함 
+      $("#"+type).val(parseInt(preValue)+1);
+
+      next();
+
+      console.log(type+$("#"+type).val());
+    });
+
+    $("#B").click(function(){
+      next();
+    });
+
+    // 다음 문제로 넘어가는 함수
+    function next() {
+
+      //마지막 문제일 시
+      if(num==13){
+        $(".question").hide();
+        $(".result").show();
+
+        let mbti="";
+        ($("#EI").val() < 2) ? mbti+="I" : mbti+="E";
+        ($("#SN").val() < 2) ? mbti+="N" : mbti+="S";
+        ($("#TF").val() < 2) ? mbti+="F" : mbti+="T";
+        ($("#JP").val() < 2) ? mbti+="P" : mbti+="J";
+        alert(mbti);
+        $("#img").attr("src", result[mbti]["img"]);
+        $("#animal").html(result[mbti]["animal"]);
+        $("#explain").html(result[mbti]["explain"]);
+      }
+      else{
+        // 프로그레스바에 style 속성을 뒷 값으로 고침
+        $(".progress-bar").attr('style', 'width: calc(100/12*'+num+'%)');
+  
+        // 아이디 title의 html 안에서 문제 번호의 title로 바꿔 줌 
+        $("#title").html(q[num]["title"]);
+  
+        //값 바꾸기
+        $("#type").val(q[num]["type"]);
+        $("#A").html(q[num]["A"]);
+        $("#B").html(q[num]["B"]);
+  
+        //다음 순서 
+        num++;
+
+      }
+
+    }
+  </script>
+</body>
+</html>
